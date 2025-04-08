@@ -1,20 +1,22 @@
-//Принцип роботи основа: сайт оптимізований вікіпедія про індиків. Коли гортаючи сайт ви прогорнули зображення 
-//то воно завантажується. Що додати: золи ви загорнули зображення то воно зникає і назад гортаючи зявляється з анімашкою.
-const observerImages = document.querySelectorAll('.go-img');//збір елементів з цим класом
-const betaImg = {
-  root: null, //дозволяє спостерігати елент в межах вікна браузера
+//Принцип роботи основа: сайт оптимізований вікіпедія про індиків. Коли гортаючи сайт ви прогорнули зображення
+//то воно завантажується. Що додати: золи ви загорнули зображення то воно зникає і назад гортаючи зявляється з анімашкою
+const images = document.querySelectorAll('.go-img');
+const options = {
+  root: null,
+  rootMargin: '0px',
 };
-const observer = new IntersectionObserver(function(entries, observer) {
+const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
+    const image = entry.target;
     if (entry.isIntersecting) {
-      const image = entry.target;
       const src = image.getAttribute('data-src');
-      image.setAttribute('src', src);
-      image.classList.remove('lazy');
-      observer.unobserve(image);
+      if (!image.src || image.src.includes('placeholder')) {
+        image.src = src;
+        image.classList.add('fade-in');
+      }
     }
   });
 }, options);
-lazyImages.forEach(image => {
+images.forEach(image => {
   observer.observe(image);
 });
